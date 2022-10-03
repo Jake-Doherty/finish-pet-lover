@@ -3,6 +3,7 @@
 import '../auth/user.js';
 // > Part A: import upload image
 // > Part B: import fetch to create a pet
+import { uploadImage, createPet } from '../fetch-utils.js';
 
 /* Get DOM Elements */
 const petForm = document.getElementById('pet-form');
@@ -25,6 +26,7 @@ imageInput.addEventListener('change', () => {
 
 petForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    petForm.querySelector('button').disabled = true;
 
     const formData = new FormData(petForm);
 
@@ -33,15 +35,29 @@ petForm.addEventListener('submit', async (e) => {
     const imagePath = `pets/${randomFolder}/${imageFile.name}`;
     // > Part A: Call upload image with the bucket ("images"),
     // the imagePath, and the imageFile - and store the returned url
+    const url = await uploadImage('images', imagePath, imageFile);
 
     const pet = {
         // > Part B: add the name, bio, and image_url fields to the pet object
+        name: formData.get('name'),
+        bio: formData.get('bio'),
+        image_url: url,
     };
 
     // > Part B:
     //    - call function to create the pet in the database
+    const response = await createPet(pet);
+
     //    - store the error and pets state from the response
+    error = response.error;
+    petForm.querySelector('button').disabled = false;
+
     //    - either display the error or redirect the user to the home page
+    if (error) {
+        displayError();
+    } else {
+        location.assign('/');
+    }
 });
 
 /* Display Functions */
