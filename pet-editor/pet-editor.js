@@ -35,7 +35,7 @@ petForm.addEventListener('submit', async (e) => {
     const imagePath = `pets/${randomFolder}/${imageFile.name}`;
     // > Part A: Call upload image with the bucket ("images"),
     // the imagePath, and the imageFile - and store the returned url
-    const url = uploadImage('images', imagePath, imageFile);
+    const url = await uploadImage('images', imagePath, imageFile);
 
     const pet = {
         // > Part B: add the name, bio, and image_url fields to the pet object
